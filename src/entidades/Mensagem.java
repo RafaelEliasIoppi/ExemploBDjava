@@ -1,24 +1,28 @@
 package entidades;
 
-import java.sql.Date;
+
+
 
 public  class  Mensagem {
 
     private int codigo;
     private String nome;
-    private String remetente;
+    private String setor;
     private String destinatario;
     private String mensagem;
-    private Date dataEnvio;
+    private String dataEnvio;
     private String status;
 
-    public Mensagem(String nome, String remetente, String destinatario, String mensagem, java.util.Date dataEnvio2, String status) {
+
+    public Mensagem() {
+    }
+    public Mensagem(String nome, String setor, String destinatario, String mensagem, String dataEnvio2) {
         this.nome = nome;
-        this.remetente = remetente;
+        this.setor = setor;
         this.destinatario = destinatario;
         this.mensagem = mensagem;
-        this.dataEnvio = (Date) dataEnvio2;
-        this.status = status;
+        this.dataEnvio =  dataEnvio2;
+        
     }
 
     public int getCodigo() {
@@ -37,12 +41,12 @@ public  class  Mensagem {
         this.nome = nome;
     }
 
-    public String getRemetente() {
-        return remetente;
+    public String getSetor() {
+        return setor;
     }
 
-    public void setRemetente(String remetente) {
-        this.remetente = remetente;
+    public void setSetor(String setor) {
+        this.setor = setor;
     }
 
     public String getDestinatario() {
@@ -61,11 +65,11 @@ public  class  Mensagem {
         this.mensagem = mensagem;
     }
 
-    public Date getDataEnvio() {
-        return dataEnvio;
+    public String getDataEnvio() {
+        return  dataEnvio;
     }
 
-    public void setDataEnvio(Date dataEnvio) {
+    public void setDataEnvio(String dataEnvio) {
         this.dataEnvio = dataEnvio;
     }
 

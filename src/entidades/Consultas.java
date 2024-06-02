@@ -1,11 +1,16 @@
 package entidades;
 
-import javax.swing.*;
 import DAO.MensagemDao;
-import entidades.Mensagem;
 import java.awt.*;
 import java.awt.event.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
+import javax.swing.*;
 
 public class Consultas extends JFrame implements ActionListener {
     private JComboBox<String> nomeComboBox, setorComboBox;
@@ -13,8 +18,8 @@ public class Consultas extends JFrame implements ActionListener {
     private JTextArea resultadoArea;
     private JButton consultarButton, consultarTodosButton;
 
-    private String[] nomes = {"Todos", "Rafael", "Diego", "Tiago"};
-    private String[] setores = { "Microbiologia", "FQ", "ADM"};
+    private String[] nomes;
+    private String[] setores = {"Microbiologia", "FQ", "ADM"};
 
     public Consultas() {
         // Configurações da janela
@@ -28,6 +33,7 @@ public class Consultas extends JFrame implements ActionListener {
         filtroPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         filtroPanel.add(new JLabel("Nome:"));
+        popularNomes(); // Popula os nomes a partir da tabela usuario
         nomeComboBox = new JComboBox<>(nomes);
         filtroPanel.add(nomeComboBox);
 
@@ -71,9 +77,9 @@ public class Consultas extends JFrame implements ActionListener {
             if ("Todos".equals(nome) && "Todos".equals(setor)) {
                 mensagens = mensagemDao.consultarTodasMensagens();
             } else if (!"Todos".equals(nome) && "Todos".equals(setor)) {
-                mensagens = mensagemDao.consultarMensagensPorNomeData(nome, dataEnvio);
+                mensagens = mensagemDao.consultarMensagensPorNomeSetorData(nome, null, dataEnvio);
             } else if ("Todos".equals(nome) && !"Todos".equals(setor)) {
-                mensagens = mensagemDao.consultarMensagensPorSetorData(setor, dataEnvio);
+                mensagens = mensagemDao.consultarMensagensPorNomeSetorData(null, setor, dataEnvio);
             } else {
                 mensagens = mensagemDao.consultarMensagensPorNomeSetorData(nome, setor, dataEnvio);
             }
@@ -89,14 +95,75 @@ public class Consultas extends JFrame implements ActionListener {
         for (Mensagem mensagem : mensagens) {
             resultadoArea.append("ID: " + mensagem.getCodigo() + "\n");
             resultadoArea.append("Nome: " + mensagem.getNome() + "\n");
-            resultadoArea.append("setor: " + mensagem.getSetor() + "\n");
+            resultadoArea.append("Setor: " + mensagem.getSetor() + "\n");
             resultadoArea.append("Destinatário: " + mensagem.getDestinatario() + "\n");
             resultadoArea.append("Mensagem: " + mensagem.getMensagem() + "\n");
             resultadoArea.append("Data de Envio: " + mensagem.getDataEnvio() + "\n");
-            resultadoArea.append("Status: " + mensagem.getStatus() + "\n");
+            resultadoArea.append("Status: " + mensagem.getStatus1() + "\n");
+            resultadoArea.append("Status: " + mensagem.getStatus2()+ "\n");
+            resultadoArea.append("Status: " + mensagem.getStatus3()+ "\n");
             resultadoArea.append("-------------------------------------------------\n");
         }
     }
+
+    // Método para popular os nomes a partir da tabela usuario
+    private void popularNomes() {
+    Connection conexao = null;
+    Statement stmt = null;
+    ResultSet rs = null;
+    
+    try {
+        // Carregar o driver JDBC para o banco de dados que você está usando
+        Class.forName("com.mysql.jdbc.Driver"); // Este é um exemplo para o MySQL. Substitua pelo driver correto do seu banco de dados.
+        
+        // Estabelecer conexão com o banco de dados
+        conexao = DriverManager.getConnection("jdbc:mysql://localhost:3306/exemplobd", "root", "1234");
+        
+        // Criar uma instrução SQL
+        stmt = conexao.createStatement();
+        
+        // Executar a consulta
+        rs = stmt.executeQuery("SELECT nome FROM usuario");
+        
+        // Lista para armazenar os nomes obtidos da consulta
+        List<String> nomesList = new ArrayList<>();
+        
+        // Preencher a lista com os nomes retornados pela consulta
+        while (rs.next()) {
+            String nome = rs.getString("nome");
+            nomesList.add(nome);
+        }
+        
+        // Converte a lista para um array de Strings
+        nomes = nomesList.toArray(new String[0]);
+    } catch (ClassNotFoundException | SQLException ex) {
+        ex.printStackTrace();
+        System.out.println("Erro ao executar a consulta SQL: " + ex.getMessage());
+    } finally {
+        // Fechar os recursos
+        if (rs != null) {
+            try {
+                rs.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        if (stmt != null) {
+            try {
+                stmt.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        if (conexao != null) {
+            try {
+                conexao.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}
 
     public static void main(String[] args) {
         new Consultas();

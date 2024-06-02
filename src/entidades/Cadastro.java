@@ -1,13 +1,11 @@
 package entidades;
 
-import javax.swing.*;
 import DAO.MensagemDao;
-import entidades.Mensagem;
-
 import java.awt.*;
 import java.awt.event.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import javax.swing.*;
 
 public class Cadastro extends JFrame implements ActionListener {
     private JComboBox<String> nomeComboBox, setorComboBox, destinatarioComboBox;

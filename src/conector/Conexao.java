@@ -1,14 +1,10 @@
-package conector; // Replace this line with the correct package name.
+package conector;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-/**
- *
- * @author rafae
- */
 public class Conexao {
     private static final String url = "jdbc:mysql://localhost:3306/exemplobd";
     private static final String user = "root";
@@ -28,11 +24,11 @@ public class Conexao {
         return conexao;
     }
     
-    public static PreparedStatement getPreparedStatement(String sql) {
+    public static PreparedStatement getPreparedStatement(String sql, int returnType) {
         try {
             Connection con = getConexao();
             if (con != null) {
-                return con.prepareStatement(sql);
+                return con.prepareStatement(sql, returnType);
             } else {
                 throw new SQLException("Conexão é nula, não foi possível criar o PreparedStatement.");
             }
@@ -40,5 +36,4 @@ public class Conexao {
             throw new RuntimeException("Erro ao criar o PreparedStatement: " + e.getMessage(), e);
         }
     }
-    
 }

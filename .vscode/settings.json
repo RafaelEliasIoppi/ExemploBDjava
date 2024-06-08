@@ -1,8 +1,10 @@
+
 {
     "java.project.sourcePaths": ["src"],
     "java.project.outputPath": "bin",
     "java.project.referencedLibraries": [
-        "lib/**/*.jar"
+        "lib/**/*.jar",
+        "lib/mysql-connector-java-8.0.28.jar"  // Caminho relativo para o arquivo JAR do MySQL Connector/J
     ],
     "java.debug.settings.onBuildFailureProceed": true
 }
